@@ -1,4 +1,4 @@
-package com.paysafe.aws_s3_svc;
+package com.nexio.aws_s3_svc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

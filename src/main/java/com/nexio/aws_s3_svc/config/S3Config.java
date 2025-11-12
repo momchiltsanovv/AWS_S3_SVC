@@ -1,6 +1,5 @@
-package com.paysafe.aws_s3_svc.config;
+package com.nexio.aws_s3_svc.config;
 
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

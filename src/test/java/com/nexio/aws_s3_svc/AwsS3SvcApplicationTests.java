@@ -1,4 +1,4 @@
-package com.paysafe.aws_s3_svc;
+package com.nexio.aws_s3_svc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

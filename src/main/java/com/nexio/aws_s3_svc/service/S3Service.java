@@ -1,6 +1,5 @@
-package com.paysafe.aws_s3_svc.service;
+package com.nexio.aws_s3_svc.service;
 
-import com.paysafe.aws_s3_svc.web.dto.AwsFileRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +9,7 @@ import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class S3Service {
@@ -32,20 +32,22 @@ public class S3Service {
         this.s3Client = s3Client;
     }
 
-    public String upsertProfilePic(MultipartFile file, AwsFileRequest request) throws IOException {
+    public String upsertProfilePic(UUID userId, MultipartFile file) throws IOException {
 
-        return uploadToS3BucketFolder(request.getFile(),request, profilePicFolder);
+        return uploadToS3BucketFolder(userId, file, profilePicFolder);
     }
 
-    public String upsertItemPics(MultipartFile file, AwsFileRequest request) throws IOException {
+    public String upsertItemPics(UUID userId, MultipartFile file) throws IOException {
 
-        return uploadToS3BucketFolder(request.getFile(),request, itemFolder);
+        return uploadToS3BucketFolder(userId, file, profilePicFolder);
     }
 
-    private String uploadToS3BucketFolder(MultipartFile file,AwsFileRequest request, String folderName) throws IOException {
+    private String uploadToS3BucketFolder(UUID userId,
+                                          MultipartFile file,
+                                          String folderName) throws IOException {
 
         String ext = file.getOriginalFilename().split("\\.")[1];
-        String newFilename = request.getUserId() + "." + ext;
+        String newFilename = userId + "." + ext;
         String key = folderName + newFilename;
 
 
