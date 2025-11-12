@@ -1,7 +1,7 @@
-package com.paysafe.aws_s3_svc.web;
+package com.nexio.aws_s3_svc.web;
 
-import com.paysafe.aws_s3_svc.service.S3Service;
-import com.paysafe.aws_s3_svc.web.dto.S3Response;
+import com.nexio.aws_s3_svc.service.S3Service;
+import com.nexio.aws_s3_svc.web.dto.S3Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
