@@ -32,4 +32,5 @@ public class Asset {
             nullable = false,
             length = 1000)
     private String awsS3Path;
+    
 }
