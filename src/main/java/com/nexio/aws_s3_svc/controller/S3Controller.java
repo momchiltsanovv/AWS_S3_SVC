@@ -24,7 +24,6 @@ public class S3Controller {
     public ResponseEntity<S3Response> sendFile(@RequestParam("user_id") UUID id,
                                                @RequestPart(value = "file") MultipartFile file) throws IOException {
 
-        System.out.println();
         String URL = s3Service.upsertProfilePic(id, file);
 
         S3Response response = S3Response.builder()

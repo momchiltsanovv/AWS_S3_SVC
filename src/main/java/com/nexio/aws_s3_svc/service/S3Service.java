@@ -1,7 +1,10 @@
 package com.nexio.aws_s3_svc.service;
 
+import com.nexio.aws_s3_svc.model.Asset;
+import com.nexio.aws_s3_svc.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -15,6 +18,7 @@ import java.util.UUID;
 public class S3Service {
 
     private final S3Client s3Client;
+    private final AssetRepository assetRepository;
 
     @Value("${aws.bucket.name}")
     private String bucketName;
@@ -28,18 +32,21 @@ public class S3Service {
     @Value("${aws.bucket.folder.item-pic}")
     private String itemFolder;
 
-    public S3Service(S3Client s3Client) {
+    public S3Service(S3Client s3Client, AssetRepository assetRepository) {
         this.s3Client = s3Client;
+        this.assetRepository = assetRepository;
     }
 
+    @Transactional
     public String upsertProfilePic(UUID userId, MultipartFile file) throws IOException {
 
         return uploadToS3BucketFolder(userId, file, profilePicFolder);
     }
 
+    @Transactional
     public String upsertItemPics(UUID userId, MultipartFile file) throws IOException {
 
-        return uploadToS3BucketFolder(userId, file, profilePicFolder);
+        return uploadToS3BucketFolder(userId, file, itemFolder);
     }
 
     private String uploadToS3BucketFolder(UUID userId,
@@ -60,7 +67,14 @@ public class S3Service {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
+        String s3Url = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
+
+        Asset asset = new Asset();
+        asset.setCreatedBy(userId);
+        asset.setAwsS3Path(s3Url);
+        assetRepository.save(asset);
+
+        return s3Url;
     }
 
 }
