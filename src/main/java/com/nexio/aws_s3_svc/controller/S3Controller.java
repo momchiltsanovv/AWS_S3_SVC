@@ -1,7 +1,11 @@
 package com.nexio.aws_s3_svc.controller;
 
-import com.nexio.aws_s3_svc.service.S3Service;
+import com.nexio.aws_s3_svc.dto.AssetResponse;
 import com.nexio.aws_s3_svc.dto.S3Response;
+import com.nexio.aws_s3_svc.service.AssetService;
+import com.nexio.aws_s3_svc.service.S3Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,9 +19,11 @@ public class S3Controller {
 
 
     private final S3Service s3Service;
+    private final AssetService assetService;
 
-    public S3Controller(S3Service s3Service) {
+    public S3Controller(S3Service s3Service, AssetService assetService) {
         this.s3Service = s3Service;
+        this.assetService = assetService;
     }
 
     @PostMapping(value = "/upload")
@@ -38,6 +44,16 @@ public class S3Controller {
         String URL = s3Service.upsertItemPic(itemId, file);
 
         return getResponseEntity(URL);
+    }
+
+
+    //TODO TEST THIS ENDPOINT for Admin-style to list all uploaded assets.
+    @GetMapping("/assets")
+    public ResponseEntity<Page<AssetResponse>> getAssets(Pageable pageable) {
+
+        Page<AssetResponse> assets = assetService.getAssets(pageable);
+
+        return ResponseEntity.ok(assets);
     }
 
     private static ResponseEntity<S3Response> getResponseEntity(String URL) {
