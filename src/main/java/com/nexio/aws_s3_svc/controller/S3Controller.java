@@ -21,7 +21,7 @@ public class S3Controller {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<S3Response> sendFile(@RequestParam("userId") UUID userId,
+    public ResponseEntity<S3Response> sendFile(@RequestParam("user_id") UUID userId,
                                                @RequestPart(
                                                        value = "file") MultipartFile file) throws IOException {
 
