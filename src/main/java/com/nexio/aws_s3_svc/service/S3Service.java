@@ -44,7 +44,7 @@ public class S3Service {
     }
 
     @Transactional
-    public String upsertItemPics(UUID userId, MultipartFile file) throws IOException {
+    public String upsertItemPic(UUID userId, MultipartFile file) throws IOException {
 
         return uploadToS3BucketFolder(userId, file, itemFolder);
     }

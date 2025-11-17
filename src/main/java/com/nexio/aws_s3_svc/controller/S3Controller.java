@@ -21,18 +21,29 @@ public class S3Controller {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<S3Response> sendFile(@RequestParam("user_id") UUID id,
-                                               @RequestPart(value = "file") MultipartFile file) throws IOException {
+    public ResponseEntity<S3Response> sendFile(@RequestParam("userId") UUID userId,
+                                               @RequestPart(
+                                                       value = "file") MultipartFile file) throws IOException {
 
-        String URL = s3Service.upsertProfilePic(id, file);
+        String URL = s3Service.upsertProfilePic(userId, file);
 
-        S3Response response = S3Response.builder()
-                                        .URL(URL)
-                                        .build();
-
-        return ResponseEntity.ok()
-                             .body(response);
+        return getResponseEntity(URL);
     }
 
+    @PostMapping("/upload/item")
+    public ResponseEntity<S3Response> sendItemFile(@RequestParam("item_id") UUID itemId,
+                                                   @RequestPart(
+                                                           value = "file") MultipartFile file) throws IOException {
 
+        String URL = s3Service.upsertItemPic(itemId, file);
+
+        return getResponseEntity(URL);
+    }
+
+    private static ResponseEntity<S3Response> getResponseEntity(String URL) {
+
+        return ResponseEntity.ok().body(S3Response.builder()
+                                                  .URL(URL)
+                                                  .build());
+    }
 }
