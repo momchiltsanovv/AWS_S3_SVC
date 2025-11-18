@@ -4,13 +4,12 @@ import com.nexio.aws_s3_svc.dto.AssetResponse;
 import com.nexio.aws_s3_svc.dto.S3Response;
 import com.nexio.aws_s3_svc.service.AssetService;
 import com.nexio.aws_s3_svc.service.S3Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,8 +27,7 @@ public class S3Controller {
 
     @PostMapping(value = "/upload")
     public ResponseEntity<S3Response> sendFile(@RequestParam("user_id") UUID userId,
-                                               @RequestPart(
-                                                       value = "file") MultipartFile file) throws IOException {
+                                               @RequestPart(value = "file") MultipartFile file) throws IOException {
 
         String URL = s3Service.upsertProfilePic(userId, file);
 
@@ -38,10 +36,10 @@ public class S3Controller {
 
     @PostMapping("/upload/item")
     public ResponseEntity<S3Response> sendItemFile(@RequestParam("item_id") UUID itemId,
-                                                   @RequestPart(
-                                                           value = "file") MultipartFile file) throws IOException {
+                                                   @RequestParam("user_id") UUID userId,
+                                                   @RequestPart(value = "file") MultipartFile file) throws IOException {
 
-        String URL = s3Service.upsertItemPic(itemId, file);
+        String URL = s3Service.upsertItemPic(itemId, userId, file);
 
         return getResponseEntity(URL);
     }
@@ -49,9 +47,9 @@ public class S3Controller {
 
     //TODO TEST THIS ENDPOINT for Admin-style to list all uploaded assets.
     @GetMapping("/assets")
-    public ResponseEntity<Page<AssetResponse>> getAssets(Pageable pageable) {
+    public ResponseEntity<List<AssetResponse>> getAssets() {
 
-        Page<AssetResponse> assets = assetService.getAssets(pageable);
+        List<AssetResponse> assets = assetService.getAssets();
 
         return ResponseEntity.ok(assets);
     }

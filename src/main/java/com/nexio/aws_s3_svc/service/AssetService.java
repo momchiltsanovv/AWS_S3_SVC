@@ -3,9 +3,10 @@ package com.nexio.aws_s3_svc.service;
 import com.nexio.aws_s3_svc.dto.AssetResponse;
 import com.nexio.aws_s3_svc.model.Asset;
 import com.nexio.aws_s3_svc.repository.AssetRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AssetService {
@@ -16,9 +17,11 @@ public class AssetService {
         this.assetRepository = assetRepository;
     }
 
-    public Page<AssetResponse> getAssets(Pageable pageable) {
-        return assetRepository.findAll(pageable)
-                              .map(this::mapToResponse);
+    public List<AssetResponse> getAssets() {
+        return assetRepository.findAll()
+                              .stream()
+                              .map(this::mapToResponse)
+                              .collect(Collectors.toList());
     }
 
     private AssetResponse mapToResponse(Asset asset) {

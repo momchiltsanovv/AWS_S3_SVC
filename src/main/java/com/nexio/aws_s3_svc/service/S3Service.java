@@ -40,21 +40,22 @@ public class S3Service {
     @Transactional
     public String upsertProfilePic(UUID userId, MultipartFile file) throws IOException {
 
-        return uploadToS3BucketFolder(userId, file, profilePicFolder);
+        return uploadToS3BucketFolder(userId, file, profilePicFolder, userId);
     }
 
     @Transactional
-    public String upsertItemPic(UUID userId, MultipartFile file) throws IOException {
+    public String upsertItemPic(UUID itemId, UUID userId, MultipartFile file) throws IOException {
 
-        return uploadToS3BucketFolder(userId, file, itemFolder);
+        return uploadToS3BucketFolder(itemId, file, itemFolder, userId);
     }
 
-    private String uploadToS3BucketFolder(UUID userId,
+    private String uploadToS3BucketFolder(UUID objectId,
                                           MultipartFile file,
-                                          String folderName) throws IOException {
+                                          String folderName,
+                                          UUID createdBy) throws IOException {
 
         String ext = file.getOriginalFilename().split("\\.")[1];
-        String newFilename = userId + "." + ext;
+        String newFilename = objectId + "." + ext;
         String key = folderName + newFilename;
 
 
@@ -70,7 +71,7 @@ public class S3Service {
         String s3Url = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, key);
 
         Asset asset = new Asset();
-        asset.setCreatedBy(userId);
+        asset.setCreatedBy(createdBy);
         asset.setAwsS3Path(s3Url);
         assetRepository.save(asset);
 
